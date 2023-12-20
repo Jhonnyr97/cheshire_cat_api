@@ -32,7 +32,21 @@ module CheshireCatApi
     end
 
     def show(id)
-      @client.get_request("/plugins/#{id}/")
+      response = @client.get_request("/plugins/#{id}/")
+      response[:data]
+    end
+
+    def settings
+      response = @client.get_request("/plugins/settings/")
+      response[:settings]
+    end
+
+    def setting(id)
+      @client.get_request("/plugins/settings/#{id}/")
+    end
+
+    def update_setting(id, value)
+      @client.put_request("/plugins/settings/#{id}/", value)
     end
   end
 end

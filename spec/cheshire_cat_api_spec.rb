@@ -247,5 +247,70 @@ describe CheshireCatApi::Client do
     expect(subject.plugins.toggle("aichatsql")).to eq(response)
   end
 
+  it "show plugin" do
+    response = {
+      data: {
+        id: "aichatsql",
+        name: "AIChatSQL",
+        description: "Discover the future of query processing with AIChatSQL. Harness the unlimited potential of large language models (LLM) to execute your queries intuitively and powerfully. Revolutionize the way you interact with databases, thanks to artificial intelligence that understands natural language and instantly translates your requests into SQL queries. Take control in your hands and simplify the data querying process. Welcome to the future of human-machine interaction in the database domain with AIChatSQL.",
+        author_name: "Nilthon Jhon Rojas Apumayta",
+        author_url: "https://www.linkedin.com/in/nilthon-jhon-rojas-apumayta-87634913a/",
+        plugin_url: "https://github.com/Jhonnyr97/AIChatSQL",
+        tags: "sql, llm, cheshire-cat, postgres, mysql, sqlite, python",
+        thumb: "https://raw.githubusercontent.com/Jhonnyr97/AIChatSQL/main/logo.png",
+        version: "0.0.5",
+        active: true,
+        hooks: [
+          {
+            name: "before_cat_bootstrap",
+            priority: 0
+          }
+        ],
+        tools: [
+          {
+            name: "database"
+          }
+        ]
+      }
+    }
+
+    stub_request(:get, "localhost:1865/plugins/aichatsql/").to_return(status: 200, body: response.to_json)
+
+    expect(subject.plugins.show("aichatsql")).to eq(response[:data])
+  end
+
+  it "settings plugin" do
+    response = {
+      settings: [
+        {
+          name: "core_plugin",
+          value: {},
+          schema: {}
+        }
+      ]
+    }
+
+    stub_request(:get, "localhost:1865/plugins/settings/").to_return(status: 200, body: response.to_json)
+
+    expect(subject.plugins.settings).to eq(response[:settings])
+  end
+
+  it "update plugin" do
+    response = {
+      name: "aichatsql",
+      value: {
+        DataSource: "sqlite"
+      }
+    }
+
+    request = {
+      DataSource: "sqlite"
+    }
+
+    stub_request(:get, "localhost:1865/plugins/settings/aichatsql/").to_return(status: 200, body: response.to_json)
+
+    expect(subject.plugins.update_setting("aichatsql", request)).to eq(response)
+  end
+
 
 end
