@@ -1,0 +1,12 @@
+module CheshireCatApi
+  module HttpUtils
+    def get_request: (String, Hash[untyped, untyped]?) -> Hash[untyped, untyped]
+
+    def put_request: (String, Hash[untyped, untyped]?) -> Hash[untyped, untyped]
+
+    def post_request: (String, Hash[untyped, untyped]?) -> Hash[untyped, untyped]
+
+    def parse_response: (HTTParty::Response) -> Hash[untyped, untyped]
+
+  end
+end
