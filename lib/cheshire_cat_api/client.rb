@@ -3,6 +3,7 @@ require_relative "setting"
 require_relative "plugin"
 require_relative "llm"
 require_relative "memory"
+require_relative "embedder"
 require_relative "http_utils"
 
 
@@ -14,7 +15,7 @@ module CheshireCatApi
     include HTTParty
     include HttpUtils
 
-    attr_reader :settings, :plugins, :llm, :memory
+    attr_reader :settings, :plugins, :llm, :memory, :embedder
 
     def initialize(url, api_key)
       self.class.base_uri url
@@ -24,6 +25,7 @@ module CheshireCatApi
       @plugins = Plugin.new(self)
       @llm = Llm.new(self)
       @memory = Memory.new(self)
+      @embedder = Embedder.new(self)
     end
 
     def home

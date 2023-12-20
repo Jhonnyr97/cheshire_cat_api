@@ -44,8 +44,8 @@ module CheshireCatApi
       @client.get_request("/plugins/settings/#{id}/")
     end
 
-    def update_setting(id, value)
-      @client.put_request("/plugins/settings/#{id}/", value)
+    def update_setting(id, options = {})
+      @client.put_request("/plugins/settings/#{id}/", options)
     end
   end
 end

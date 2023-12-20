@@ -545,5 +545,80 @@ describe CheshireCatApi::Client do
     expect(subject.memory.delete_conversations).to eq(response[:deleted])
   end
 
+  # EMBEDDER
+
+  it "index embedder settings" do
+    response = {
+      settings: [
+        {
+          name: "EmbedderFakeConfig",
+          value: {},
+          schema: {
+            description: "Configuration for default embedder. It just outputs random numbers.",
+            humanReadableName: "Default Embedder",
+            link: "",
+            properties: {
+              size: {
+                default: 128,
+                title: "Size",
+                type: "integer"
+              }
+            },
+            title: "EmbedderFakeConfig",
+            type: "object",
+            languageEmbedderName: "EmbedderFakeConfig"
+          }
+        }
+      ],
+      selected_configuration: "EmbedderOpenAIConfig"
+    }
+
+    stub_request(:get, "localhost:1865/embedder/settings/").to_return(status: 200, body: response.to_json)
+
+    expect(subject.embedder.settings).to eq(response[:settings])
+  end
+
+  it "get embedder settings" do
+    response = {
+      name: "EmbedderFakeConfig",
+      value: {},
+      schema: {
+        description: "Configuration for default embedder. It just outputs random numbers.",
+        humanReadableName: "Default Embedder",
+        link: "",
+        properties: {
+          size: {
+            default: 128,
+            title: "Size",
+            type: "integer"
+          }
+        },
+        title: "EmbedderFakeConfig",
+        type: "object",
+        languageEmbedderName: "EmbedderFakeConfig"
+      }
+    }
+
+    stub_request(:get, "localhost:1865/embedder/settings/EmbedderFakeConfig/").to_return(status: 200, body: response.to_json)
+
+    expect(subject.embedder.setting("EmbedderFakeConfig")).to eq(response)
+  end
+
+  it "update embedder settings" do
+    options = { size: 156 }
+
+    response = {
+      name: "EmbedderFakeConfig",
+      value: {
+        size: 156
+      }
+    }
+
+    stub_request(:put, "localhost:1865/embedder/settings/EmbedderFakeConfig/").to_return(status: 200, body: response.to_json)
+
+    expect(subject.embedder.update("EmbedderFakeConfig", options)).to eq(response)
+
+  end
+
 
 end

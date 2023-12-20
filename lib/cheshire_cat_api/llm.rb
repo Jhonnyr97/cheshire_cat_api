@@ -14,7 +14,7 @@ module CheshireCatApi
     end
 
     def update(id, value)
-      @client.put_request("/llm/settings/#{id}/", value)
+      @client.put_request("/llm/settings/#{id}/", options = {})
     end
   end
 end
