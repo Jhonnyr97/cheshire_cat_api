@@ -1,25 +1,20 @@
 require "httparty"
 require_relative "setting"
 require_relative "plugin"
+require_relative "llm"
+require_relative "memory"
 require_relative "http_utils"
 
 
 module CheshireCatApi
-  class Error < StandardError
-    attr_reader :response
-
-    def initialize(response)
-      @response = response
-      super(response.body)
-    end
-  end
+  class Error < StandardError;end
 
   # Client httparty
   class Client
     include HTTParty
     include HttpUtils
 
-    attr_reader :settings, :plugins
+    attr_reader :settings, :plugins, :llm, :memory
 
     def initialize(url, api_key)
       self.class.base_uri url
@@ -27,6 +22,8 @@ module CheshireCatApi
       self.class.headers "Content-Type" => "application/json"
       @settings = Setting.new(self)
       @plugins = Plugin.new(self)
+      @llm = Llm.new(self)
+      @memory = Memory.new(self)
     end
 
     def home

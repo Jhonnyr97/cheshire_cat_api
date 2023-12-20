@@ -14,6 +14,8 @@ describe CheshireCatApi::Client do
     expect(subject.home).to eq(response)
   end
 
+  # SETTINGS
+
   it "index settings" do
     response = {
       "settings": []
@@ -215,6 +217,7 @@ describe CheshireCatApi::Client do
     expect(subject.plugins.upload(File.open("spec/fixtures/aichatsql.zip", "rb"))).to eq(response)
   end
 
+  # PLUGIN
 
   it "upload plugin from url" do
     response = {
@@ -307,9 +310,239 @@ describe CheshireCatApi::Client do
       DataSource: "sqlite"
     }
 
-    stub_request(:get, "localhost:1865/plugins/settings/aichatsql/").to_return(status: 200, body: response.to_json)
+    stub_request(:put, "localhost:1865/plugins/settings/aichatsql/").to_return(status: 200, body: response.to_json)
 
     expect(subject.plugins.update_setting("aichatsql", request)).to eq(response)
+  end
+
+  # LLM
+
+  it "index llm settings" do
+    response = {
+      settings: [
+        {
+          name: "LLMDefaultConfig",
+          value: {},
+          schema: {
+            description: "A dumb LLM just telling that the Cat is not configured. There will be a nice LLM here once consumer hardware allows it.",
+            humanReadableName: "Default Language Model",
+            link: "",
+            properties: {},
+            title: "LLMDefaultConfig",
+            type: "object",
+            languageModelName: "LLMDefaultConfig"
+          }
+        },
+        {
+          name: "LLMCustomConfig",
+          value: {},
+          schema: {
+            description: "LLM on a custom endpoint. See docs for examples.",
+            humanReadableName: "Custom LLM",
+            link: "https://cheshirecat.ai/2023/08/19/custom-large-language-model/",
+            properties: {
+              url: {
+                title: "Url",
+                type: "string"
+              },
+              auth_key: {
+                default: "optional_auth_key",
+                title: "Auth Key",
+                type: "string"
+              },
+              options: {
+                default: "{}",
+                title: "Options",
+                type: "string"
+              }
+            },
+            required: [
+              "url"
+            ],
+            title: "LLMCustomConfig",
+            type: "object",
+            languageModelName: "LLMCustomConfig"
+          }
+        },
+      ],
+      selected_configuration: nil
+    }
+
+    stub_request(:get, "localhost:1865/llm/settings/").to_return(status: 200, body: response.to_json)
+
+    expect(subject.llm.settings).to eq(response[:settings])
+  end
+
+  it "get llm settings" do
+    response = {
+      name: "LLMCustomConfig",
+      value: {},
+      schema: {
+        description: "LLM on a custom endpoint. See docs for examples.",
+        humanReadableName: "Custom LLM",
+        link: "https://cheshirecat.ai/2023/08/19/custom-large-language-model/",
+        properties: {
+          url: {
+            title: "Url",
+            type: "string"
+          },
+          auth_key: {
+            default: "optional_auth_key",
+            title: "Auth Key",
+            type: "string"
+          },
+          options: {
+            default: "{}",
+            title: "Options",
+            type: "string"
+          }
+        },
+        required: [
+          "url"
+        ],
+        title: "LLMCustomConfig",
+        type: "object",
+        languageModelName: "LLMCustomConfig"
+      }
+    }
+
+    stub_request(:get, "localhost:1865/llm/settings/LLMCustomConfig/").to_return(status: 200, body: response.to_json)
+
+    expect(subject.llm.setting("LLMCustomConfig")).to eq(response)
+  end
+
+  it "update llm settings" do
+    request = {
+      url: "https://www.example.com",
+    }
+    response = {
+      name: "LLMCustomConfig",
+      value: {
+        url: "https://www.example.com"
+      }
+    }
+    stub_request(:put, "localhost:1865/llm/settings/LLMCustomConfig/").to_return(status: 200, body: response.to_json)
+    expect(subject.llm.update("LLMCustomConfig", request)).to eq(response)
+  end
+
+  # MEMORY
+
+  it "recall memory" do
+    response = {"query":{"text":"test","vector":[0,0]}}
+
+    stub_request(:get, "localhost:1865/memory/recall/?text=test&k=100").to_return(status: 200, body: response.to_json)
+
+    expect(subject.memory.recall("test", k: 100)).to eq(response)
+  end
+
+  it "index collections" do
+    response = {
+      "collections": [
+        {
+          "name": "episodic",
+          "vectors_count": 0
+        },
+        {
+          "name": "declarative",
+          "vectors_count": 0
+        },
+        {
+          "name": "procedural",
+          "vectors_count": 2
+        }
+      ]
+    }
+
+    stub_request(:get, "localhost:1865/memory/collections/").to_return(status: 200, body: response.to_json)
+
+    expect(subject.memory.collections).to eq(response[:collections])
+  end
+
+  it "delete collections" do
+    response = {
+      "deleted": {
+        "episodic": true,
+        "declarative": true,
+        "procedural": true
+      }
+    }
+
+    stub_request(:delete, "localhost:1865/memory/collections/").to_return(status: 200, body: response.to_json)
+
+    expect(subject.memory.delete_collections).to eq(response[:deleted])
+  end
+
+  it "delete collection" do
+    response = {
+      "deleted": {
+        "episodic": true
+      }
+    }
+
+    stub_request(:delete, "localhost:1865/memory/collections/episodic/").to_return(status: 200, body: response.to_json)
+
+    expect(subject.memory.delete_collection("episodic")).to eq(response[:deleted])
+  end
+
+  it "delete point" do
+    response = {
+      deleted: "50e2d41f1b7342b3afcb7ce33657101f"
+    }
+
+    stub_request(:delete, "localhost:1865/memory/collections/episodic/points/50e2d41f1b7342b3afcb7ce33657101f/").to_return(status: 200, body: response.to_json)
+
+    expect(subject.memory.delete_point("episodic", '50e2d41f1b7342b3afcb7ce33657101f')).to eq(response[:deleted])
+  end
+
+  it "delete points" do
+    response = {
+      deleted: {
+        episodic: true
+      }
+    }
+
+    stub_request(:delete, "localhost:1865/memory/collections/episodic/").to_return(status: 200, body: response.to_json)
+
+    expect(subject.memory.delete_points("episodic")).to eq(response[:deleted])
+  end
+
+  it "index conversations" do
+    response = {
+      history: [
+        {
+          who: "Human",
+          message: "Hello",
+          why: {}
+        },
+        {
+          who: "AI",
+          message: "Well, hello there! What a pleasure to meet you in this digital wonderland. How can I assist you today?",
+          why: {
+            input: "ciao",
+            intermediate_steps: nil,
+            memory: {
+              episodic: [],
+              declarative: [],
+              procedural: []
+            }
+          }
+        }
+      ]
+    }
+
+    stub_request(:get, "localhost:1865/memory/conversation_history/").to_return(status: 200, body: response.to_json)
+
+    expect(subject.memory.conversations).to eq(response[:history])
+  end
+
+  it "delete conversations" do
+    response = {
+      deleted: true
+    }
+
+    stub_request(:delete, "localhost:1865/memory/conversation_history/").to_return(status: 200, body: response.to_json)
+
+    expect(subject.memory.delete_conversations).to eq(response[:deleted])
   end
 
 

@@ -2,7 +2,7 @@ module CheshireCatApi
   # actions and parsers
   module HttpUtils
     def get_request(endpoint, query = {}, headers = {})
-      response = self.class.get(endpoint, query: query, headers: headers)
+      response = self.class.get(endpoint, query: query , headers: headers)
       parse_response(response)
     end
 

@@ -1,6 +1,5 @@
 module CheshireCatApi
   class Plugin
-    attr_reader :response
     def initialize(client)
       @client = client
     end
