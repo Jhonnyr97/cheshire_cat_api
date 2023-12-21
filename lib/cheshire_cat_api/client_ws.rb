@@ -4,9 +4,9 @@ require 'json'
 
 module CheshireCatApi
   class ClientWs
-    attr_accessor :logs
+    attr_accessor :logs, :callback
 
-    def initialize(url:, user: nil, callback:, logs: nil )
+    def initialize(url:, user: nil, callback:nil , logs: nil )
       @url = url
       @user = user
       @message = callback
