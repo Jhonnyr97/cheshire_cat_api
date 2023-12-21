@@ -8,13 +8,10 @@ Gem::Specification.new do |spec|
   spec.authors = ["Nilthon Jhon Rojas Apumayta"]
   spec.email = ["oneill.jhon97@gmail.com"]
 
-  spec.summary = "Write a short summary, because RubyGems requires one."
-  spec.description = "Write a longer description or delete this line."
+  spec.summary = "La gemma 'cheshire_cat_api' è un client versatile ed efficiente per il framework 'Cheshire Cat' nell'ambito AI, offrendo un LLM e un sistema di embedding pronti all'uso per il tuo progetto."
   spec.homepage = "https://github.com/Jhonnyr97/cheshire_cat_api"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 2.6.0"
-
-  spec.metadata["allowed_push_host"] = "Set to your gem server 'https://example.com'"
 
   spec.metadata["homepage_uri"] = 'https://github.com/Jhonnyr97/cheshire_cat_api'
   spec.metadata["source_code_uri"] = "https://github.com/Jhonnyr97/cheshire_cat_api"
@@ -33,6 +30,7 @@ Gem::Specification.new do |spec|
 
   # Uncomment to register a new dependency of your gem
   spec.add_dependency "httparty", "~> 0.21.0"
+  spec.add_dependency "faye-websocket", "~> 0.11.3"
   spec.add_development_dependency "rspec", "~> 3.2"
   spec.add_development_dependency "webmock", '~> 3.19.1'
 

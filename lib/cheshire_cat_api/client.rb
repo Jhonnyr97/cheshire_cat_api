@@ -4,6 +4,8 @@ require_relative "plugin"
 require_relative "llm"
 require_relative "memory"
 require_relative "embedder"
+require_relative "rabbit_hole"
+require_relative "client_ws"
 require_relative "http_utils"
 
 
@@ -15,7 +17,7 @@ module CheshireCatApi
     include HTTParty
     include HttpUtils
 
-    attr_reader :settings, :plugins, :llm, :memory, :embedder
+    attr_reader :settings, :plugins, :llm, :memory, :embedder, :rabbit_hole
 
     def initialize(url, api_key)
       self.class.base_uri url
@@ -26,6 +28,7 @@ module CheshireCatApi
       @llm = Llm.new(self)
       @memory = Memory.new(self)
       @embedder = Embedder.new(self)
+      @rabbit_hole = RabbitHole.new(self)
     end
 
     def home

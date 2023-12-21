@@ -1,5 +1,6 @@
 require "cheshire_cat_api"
 require "spec_helper"
+require_relative "fake_ws"
 
 describe CheshireCatApi::Client do
   subject { CheshireCatApi::Client.new("localhost:1865", "") }
@@ -620,5 +621,54 @@ describe CheshireCatApi::Client do
 
   end
 
+  # RABBIT HOLE
+
+  it "update rabbit hole" do
+    response = {
+      filename: "rabbit_hole.txt",
+      content_type: "text/plain",
+      info: "File is being ingested asynchronously"
+    }
+
+    stub_request(:post, "localhost:1865/rabbit_hole/").to_return(status: 200, body: response.to_json)
+
+    expect(subject.rabbit_hole.update(File.open("spec/fixtures/rabbit_hole.txt", "rb"))).to eq(response)
+  end
+
+  it "url rabbit hole" do
+    response = {
+      "url": "https://loripsum.net/",
+      "info": "URL is being ingested asynchronously"
+    }
+
+    stub_request(:post, "localhost:1865/rabbit_hole/web/").to_return(status: 200, body: response.to_json)
+
+    expect(subject.rabbit_hole.url("https://loripsum.net/")).to eq(response)
+  end
+
+  it "memory rabbit hole" do
+    # TODO: check if this is the correct response
+    response = {
+      "info": "Memory is being ingested asynchronously"
+    }
+
+    stub_request(:post, "localhost:1865/rabbit_hole/memory/").to_return(status: 200, body: response.to_json)
+
+    expect(subject.rabbit_hole.memory(File.open("spec/fixtures/example.json", "rb"))).to eq(response)
+  end
+
+  it "allowed mimetypes rabbit hole" do
+    response = {
+      allowed: %w[application/pdf text/plain text/markdown text/html]
+    }
+
+    stub_request(:get, "localhost:1865/rabbit_hole/allowed_mimetypes/").to_return(status: 200, body: response.to_json)
+
+    expect(subject.rabbit_hole.allowed_mimetypes).to eq(response[:allowed])
+  end
+
+  # WS
+
+  # TODO: check if this is the correct response ws
 
 end
