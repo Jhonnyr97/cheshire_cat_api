@@ -6,10 +6,10 @@ module CheshireCatApi
   class ClientWs
     attr_accessor :logs
 
-    def initialize(url:, user: nil, call_back:, logs: nil )
+    def initialize(url:, user: nil, callback:, logs: nil )
       @url = url
       @user = user
-      @message = call_back
+      @message = callback
       @open = false
       @queue = []
       @logs = logs

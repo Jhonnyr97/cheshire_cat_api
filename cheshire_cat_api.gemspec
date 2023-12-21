@@ -8,7 +8,7 @@ Gem::Specification.new do |spec|
   spec.authors = ["Nilthon Jhon Rojas Apumayta"]
   spec.email = ["oneill.jhon97@gmail.com"]
 
-  spec.summary = "La gemma 'cheshire_cat_api' è un client versatile ed efficiente per il framework 'Cheshire Cat' nell'ambito AI, offrendo un LLM e un sistema di embedding pronti all'uso per il tuo progetto."
+  spec.summary = "The 'cheshire_cat_api' gem is a flexible and efficient client for the 'Cheshire Cat' framework in the field of Artificial Intelligence. It provides both a Large Language Model (LLM) and a sophisticated embedding system that are ready to use to enhance your project."
   spec.homepage = "https://github.com/Jhonnyr97/cheshire_cat_api"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 2.6.0"

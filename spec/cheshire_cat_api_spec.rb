@@ -75,6 +75,9 @@ describe CheshireCatApi::Client do
     expect(subject.settings.update("483323c4-6bc1-4a53-81a9-b164dcd7da28", response[:setting])).to eq(response[:setting])
   end
 
+  # PLUGIN
+
+
   it "index plugins" do
     response = {
       registry: [{
@@ -218,8 +221,6 @@ describe CheshireCatApi::Client do
     expect(subject.plugins.upload(File.open("spec/fixtures/aichatsql.zip", "rb"))).to eq(response)
   end
 
-  # PLUGIN
-
   it "upload plugin from url" do
     response = {
       info: "Plugin is being installed asynchronously",
@@ -299,7 +300,7 @@ describe CheshireCatApi::Client do
     expect(subject.plugins.settings).to eq(response[:settings])
   end
 
-  it "update plugin" do
+  it "update settings plugin" do
     response = {
       name: "aichatsql",
       value: {
