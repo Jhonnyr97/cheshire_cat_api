@@ -19,17 +19,25 @@ If bundler is not being used to manage dependencies, install the gem by executin
 # WebSocket
 
 ```ruby
-callback = lambda do |message|
-  puts message
+
+ws = ClientWs.new(url: "localhost:1865", user: nil)
+ws.callback = lambda do |m|
+  puts m.data
 end
-
-cat = CheshireCatApi::ClientWs.new("localhost:1865", user: nil, callback: callback )
-
-cat.send_message("Hello World")
-# => { chat_token: "exa" }
-# => { chat_token: "mple" }
+ws.connect 
+ws.send_message("hello")
+# => {"type":"chat_token","content":"Hello"}
+# ...
+# => {"type":"chat" ... }
 ```
 
+```ruby
+ws = CheshireCatApi::ClientWs.new(url: "localhost:1865", user: nil, callback: Proc.new { |m| puts m.data } )
+ws.connect(message: "hello")
+# => {"type":"chat_token","content":"Hello"}
+# ...
+# => {"type":"chat" ... }
+```
 
 # Settings, LLM, Plugin, Embedding, Rabbit Hole
 

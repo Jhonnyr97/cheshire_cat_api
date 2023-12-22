@@ -9,11 +9,10 @@ module CheshireCatApi
     def initialize(url:, user: nil, callback:nil , logs: nil )
       @url = url
       @user = user
-      @message = callback
+      @callback = callback
       @open = false
       @queue = []
       @logs = logs
-      establish_connection
     end
 
     def send_message(text)
@@ -26,15 +25,16 @@ module CheshireCatApi
     end
 
     def close
-      @connection.close if @connection
       @open = false
+      @connection.close if @connection
+    end
+
+    def connect(message: nil)
+      @thread = Thread.new { EM.run { setup_websocket } }
+      send_message(message) if message
     end
 
     private
-
-    def establish_connection
-      @thread = Thread.new { EM.run { setup_websocket } }
-    end
 
     def setup_websocket
       @connection = Faye::WebSocket::Client.new(build_ws_url)
@@ -48,8 +48,8 @@ module CheshireCatApi
     end
 
     def build_ws_url
-      url = "ws://#{@url}/ws/"
-      url += "#{@user}" if @user
+      url = "ws://#{@url}/ws"
+      url += "/#{@user}" if @user
       url
     end
 
@@ -59,7 +59,7 @@ module CheshireCatApi
     end
 
     def handle_message(event)
-      @message.call(event) if @message
+      @callback.call(event) if @callback
     end
 
     def handle_close(event)
