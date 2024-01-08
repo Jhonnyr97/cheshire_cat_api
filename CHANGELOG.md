@@ -3,6 +3,9 @@
     - Additional tests to be added
     - Incomplete tests will be completed
 
+## [0.1.3] - 2023-12-22
+- Bugfix: Resolve the issue where the WebSocket Websocket did not have parameters for protocols and options
+
 ## [0.1.2] - 2023-12-22
 - Bugfix: Resolve the issue where the WebSocket does not invoke the callback function.
 
