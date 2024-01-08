@@ -6,13 +6,15 @@ module CheshireCatApi
   class ClientWs
     attr_accessor :logs, :callback
 
-    def initialize(url:, user: nil, callback:nil , logs: nil )
+    def initialize(url:, user: nil, callback:nil , logs: nil, protocols: nil, options: nil)
       @url = url
       @user = user
       @callback = callback
       @open = false
       @queue = []
       @logs = logs
+      @protocols = protocols
+      @options = options
     end
 
     def send_message(text)
@@ -37,7 +39,7 @@ module CheshireCatApi
     private
 
     def setup_websocket
-      @connection = Faye::WebSocket::Client.new(build_ws_url)
+      @connection = Faye::WebSocket::Client.new(build_ws_url, @protocols, @options)
       bind_events
     end
 
